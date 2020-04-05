@@ -1,0 +1,162 @@
+Describe AngularFileFactory
+  Before
+    let factory = core#angular_file#getFactory()
+  End
+
+  It creates an AngularFile object from filePath
+    let ngFile = factory.create('src/app/app.component.ts')
+    Assert Equals(ngFile.path, 'src/app/app.component.ts')
+    Assert Equals(ngFile.directory, 'src/app')
+    Assert Equals(ngFile.name, 'app.component')
+    Assert Equals(ngFile.extension, 'ts')
+  End
+  
+  It treats a spec file with .spec.ts extension
+    let ngFile = factory.create('src/app/app.component.spec.ts')
+    Assert Equals(ngFile.path, 'src/app/app.component.spec.ts')
+    Assert Equals(ngFile.directory, 'src/app')
+    Assert Equals(ngFile.name, 'app.component')
+    Assert Equals(ngFile.extension, 'spec.ts')
+  End
+
+  Context when a file without extension is given
+    It creates an object with a empty extension
+      let ngFile = factory.create('./.gitignore')
+      Assert Equals(ngFile.path, './.gitignore')
+      Assert Equals(ngFile.directory, '.')
+      Assert Equals(ngFile.name, '.gitignore')
+      Assert Equals(ngFile.extension, '')
+    End
+  End
+End
+
+Describe AngularFile
+  Before
+    let factory = core#angular_file#getFactory()
+  End
+
+  Context .isSameComponent(other)
+    It returns file type equivalence without extension
+      let a = factory.create('a/a.component.ts')
+      let b = factory.create('a/a.component.css')
+      Assert Equals(a.isSameComponent(b), 1)
+      let a = factory.create('a.component.ts')
+      let b = factory.create('a.component.css')
+      Assert Equals(a.isSameComponent(b), 1)
+      let a = factory.create('a/a.component.ts')
+      let b = factory.create('a/b.component.css')
+      Assert Equals(a.isSameComponent(b), 0)
+      let a = factory.create('a/a.component.ts')
+      let b = factory.create('b/a.component.css')
+      Assert Equals(a.isSameComponent(b), 0)
+    End
+  End
+
+  Context .isTS()
+    It returns 1 if the file extension is .ts (not .spec.ts)
+      let ts = factory.create('foo.ts')
+      Assert Equals(ts.isTS(), 1)
+      let specTS = factory.create('foo.spec.ts')
+      Assert Equals(specTS.isTS(), 0)
+      let noExtension = factory.create('.gitignore')
+      Assert Equals(noExtension.isTS(), 0)
+      let notDefined = factory.create('package.json')
+      Assert Equals(notDefined.isTS(), 0)
+    End
+
+    It is case insensitive
+      let ts = factory.create('foo.TS')
+      Assert Equals(ts.isTS(), 1)
+    End
+  End
+
+  Context .isHTML()
+    It returns 1 if the file extension is .html
+      let html = factory.create('foo.html')
+      Assert Equals(html.isHTML(), 1)
+      let ts = factory.create('foo.ts')
+      Assert Equals(ts.isHTML(), 0)
+      let noExtension = factory.create('.gitignore')
+      Assert Equals(noExtension.isHTML(), 0)
+      let notDefined = factory.create('package.json')
+      Assert Equals(notDefined.isHTML(), 0)
+    End
+
+    It is case insensitive
+      let html = factory.create('foo.HTML')
+      Assert Equals(html.isHTML(), 1)
+    End
+  End
+
+  Context .isSpec()
+    It returns 1 if the file extension is .spec.ts (not *.ts)
+      let spec = factory.create('foo.spec.ts')
+      Assert Equals(spec.isSpec(), 1)
+      let ts = factory.create('foo.ts')
+      Assert Equals(ts.isSpec(), 0)
+      let noExtension = factory.create('.gitignore')
+      Assert Equals(noExtension.isHTML(), 0)
+      let notDefined = factory.create('package.json')
+      Assert Equals(notDefined.isHTML(), 0)
+    End
+
+    It is case insensitive
+      let ts = factory.create('foo.spec.TS')
+      Assert Equals(ts.isSpec(), 1)
+    End
+  End
+
+  Context .isCSS()
+    It returns 1 if the file extension is stylesheet extension (css/scss/sass/less/stylus)
+      let css = factory.create('foo.css')
+      Assert Equals(css.isCSS(), 1)
+      let scss = factory.create('foo.scss')
+      Assert Equals(scss.isCSS(), 1)
+      let sass = factory.create('foo.sass')
+      Assert Equals(sass.isCSS(), 1)
+      let less = factory.create('foo.less')
+      Assert Equals(less.isCSS(), 1)
+      let stylus = factory.create('foo.less')
+      Assert Equals(stylus.isCSS(), 1)
+
+      let ts = factory.create('foo.ts')
+      Assert Equals(ts.isCSS(), 0)
+      let noExtension = factory.create('.gitignore')
+      Assert Equals(noExtension.isCSS(), 0)
+      let notDefined = factory.create('package.json')
+      Assert Equals(notDefined.isCSS(), 0)
+    End
+
+    It is case insensitive
+      let css = factory.create('foo.CSS')
+      Assert Equals(css.isCSS(), 1)
+    End
+  End
+
+  Context .hasDefinedExtension()
+    It returns 1 if the file extension is defined
+      let ts = factory.create('foo.ts')
+      Assert Equals(ts.hasDefinedExtension(), 1)
+      let html = factory.create('foo.html')
+      Assert Equals(html.hasDefinedExtension(), 1)
+      let spec = factory.create('foo.spec.ts')
+      Assert Equals(spec.hasDefinedExtension(), 1)
+      let css = factory.create('foo.css')
+      Assert Equals(css.hasDefinedExtension(), 1)
+      let scss = factory.create('foo.scss')
+      Assert Equals(scss.hasDefinedExtension(), 1)
+      let sass = factory.create('foo.sass')
+      Assert Equals(sass.hasDefinedExtension(), 1)
+      let less = factory.create('foo.less')
+      Assert Equals(less.hasDefinedExtension(), 1)
+      let stylus = factory.create('foo.less')
+      Assert Equals(stylus.hasDefinedExtension(), 1)
+
+      let noExtension = factory.create('.gitignore')
+      Assert Equals(noExtension.hasDefinedExtension(), 0)
+      let notDefined = factory.create('package.json')
+      Assert Equals(notDefined.hasDefinedExtension(), 0)
+    End
+  End
+End
+

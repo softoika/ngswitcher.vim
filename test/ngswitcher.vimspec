@@ -1,0 +1,40 @@
+Describe When switching from html file to ts file
+  Context if the ts file exists
+    It switches to ts file
+      execute 'e test/fixture/app.component.html'
+      call ngswitcher#openTSFile(currentFilePath)
+      let currentFilePath = expand('%')
+      Assert Equals(currentFilePath, 'test/fixture/app.component.ts')
+    End
+  End
+  After
+    call ngswitcher#clearHistory()
+  End
+End
+
+Describe ngswitcher#getTSPath(currentFile, default)
+  Before
+    let factory = core#angular_file#getFactory()
+  End
+
+  Context the currentFile is not a ts file
+    It returns a ts file path
+      let notTS = factory.create('./foo.component.html')
+      let nextPath = ngswitcher#getTSPath(notTS)
+      Assert Equals(nextPath, './foo.component.ts')
+    End
+  End
+
+  Context the currentFile is a ts file
+    Context if a previous file does not exist
+      It returns a default path (defalt: .html)
+        let ts = factory.create('./foo.component.ts')
+        let nextPath = ngswitcher#getTSPath(ts)
+        Assert Equals(nextPath, './foo.component.html')
+        let nextPath = ngswitcher#getTSPath(ts, '.css')
+        Assert Equals(nextPath, './foo.component.css')
+      End
+    End
+  End
+End
+
