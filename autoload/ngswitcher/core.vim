@@ -21,6 +21,8 @@ function! s:AngularFile._isSameDirectory(other) abort
   return selfDirectory ==# otherDirectory
 endfunction
 
+" The funtion name is isSameComponent, but the target file is not limited to
+" an Angular component (such as a service)
 function! s:AngularFile.isSameComponent(other) abort
   return self._isSameDirectory(a:other) && self._isSameName(a:other)
 endfunction
@@ -33,7 +35,8 @@ let s:ExtensionType = {
 \ 'scss': 'css',
 \ 'sass': 'css',
 \ 'less': 'css',
-\ 'stylus': 'css'
+\ 'stylus': 'css',
+\ 'styl': 'css'
 \ }
 
 function! s:AngularFile.isTS() abort
@@ -77,7 +80,7 @@ function! s:AngularFileFactory.create(filePath) abort
   return ngFile
 endfunction
 
-function! core#angular_file#getFactory()
+function! ngswitcher#core#getAngularFileFactory()
   return s:AngularFileFactory
 endfunction
 

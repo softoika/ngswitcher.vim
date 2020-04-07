@@ -1,6 +1,6 @@
 Describe AngularFileFactory
   Before
-    let factory = core#angular_file#getFactory()
+    let factory = ngswitcher#core#getAngularFileFactory()
   End
 
   It creates an AngularFile object from filePath
@@ -32,7 +32,7 @@ End
 
 Describe AngularFile
   Before
-    let factory = core#angular_file#getFactory()
+    let factory = ngswitcher#core#getAngularFileFactory()
   End
 
   Context .isSameComponent(other)
@@ -116,7 +116,9 @@ Describe AngularFile
       Assert Equals(sass.isCSS(), 1)
       let less = factory.create('foo.less')
       Assert Equals(less.isCSS(), 1)
-      let stylus = factory.create('foo.less')
+      let stylus = factory.create('foo.styl')
+      Assert Equals(stylus.isCSS(), 1)
+      let stylus = factory.create('foo.stylus')
       Assert Equals(stylus.isCSS(), 1)
 
       let ts = factory.create('foo.ts')

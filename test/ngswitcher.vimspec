@@ -2,9 +2,8 @@ Describe When switching from html file to ts file
   Context if the ts file exists
     It switches to ts file
       execute 'e test/fixture/app.component.html'
-      call ngswitcher#openTSFile(currentFilePath)
-      let currentFilePath = expand('%')
-      Assert Equals(currentFilePath, 'test/fixture/app.component.ts')
+      call ngswitcher#switch(function('ngswitcher#getTSPath'))
+      Assert Equals(expand('%'), 'test/fixture/app.component.ts')
     End
   End
   After
@@ -12,15 +11,33 @@ Describe When switching from html file to ts file
   End
 End
 
-Describe ngswitcher#getTSPath(currentFile, default)
+Describe ngswitcher#getAngularFilesInCurrentDirectory()
+  It returns Angular files object (e.g. html/css/ts/spec.ts)
+    execute 'e test/fixture/app.component.html'
+    let files = ngswitcher#getAngularFilesInCurrentDirectory()
+    Assert Equals(map(files, 'v:val.path'), [
+    \ 'test/fixture/app.component.css',
+    \ 'test/fixture/app.component.html',
+    \ 'test/fixture/app.component.spec.ts',
+    \ 'test/fixture/app.component.ts'
+    \ ])
+  End
+End
+
+Describe ngswitcher#getTSPath(currentFile, targetFiles, default)
   Before
-    let factory = core#angular_file#getFactory()
+    let factory = ngswitcher#core#getAngularFileFactory()
+    let targetFiles = []
+    call add(targetFiles, factory.create('./foo.component.html'))
+    call add(targetFiles, factory.create('./foo.component.css'))
+    call add(targetFiles, factory.create('./foo.component.ts'))
+    call add(targetFiles, factory.create('./foo.component.spec.ts'))
   End
 
   Context the currentFile is not a ts file
     It returns a ts file path
       let notTS = factory.create('./foo.component.html')
-      let nextPath = ngswitcher#getTSPath(notTS)
+      let nextPath = ngswitcher#getTSPath(notTS, targetFiles)
       Assert Equals(nextPath, './foo.component.ts')
     End
   End
@@ -29,9 +46,9 @@ Describe ngswitcher#getTSPath(currentFile, default)
     Context if a previous file does not exist
       It returns a default path (defalt: .html)
         let ts = factory.create('./foo.component.ts')
-        let nextPath = ngswitcher#getTSPath(ts)
+        let nextPath = ngswitcher#getTSPath(ts, targetFiles)
         Assert Equals(nextPath, './foo.component.html')
-        let nextPath = ngswitcher#getTSPath(ts, '.css')
+        let nextPath = ngswitcher#getTSPath(ts, targetFiles, '.css')
         Assert Equals(nextPath, './foo.component.css')
       End
     End
