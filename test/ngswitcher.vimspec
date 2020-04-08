@@ -1,8 +1,8 @@
-Describe When switching from html file to ts file
-  Context if the ts file exists
+Describe ngswitcher#switch(toFileFunc)
+  Context with ngswitcher#toTS
     It switches to ts file
       execute 'e test/fixture/app.component.html'
-      call ngswitcher#switch(function('ngswitcher#getTSPath'))
+      call ngswitcher#switch(function('ngswitcher#toTS'))
       Assert Equals(expand('%'), 'test/fixture/app.component.ts')
     End
   End
@@ -24,7 +24,7 @@ Describe ngswitcher#getAngularFilesInCurrentDirectory()
   End
 End
 
-Describe ngswitcher#getTSPath(currentFile, targetFiles, default)
+Describe ngswitcher#toTS(currentFile, targetFiles)
   Before
     let factory = ngswitcher#core#getAngularFileFactory()
     let targetFiles = []
@@ -37,21 +37,156 @@ Describe ngswitcher#getTSPath(currentFile, targetFiles, default)
   Context the currentFile is not a ts file
     It returns a ts file path
       let notTS = factory.create('./foo.component.html')
-      let nextPath = ngswitcher#getTSPath(notTS, targetFiles)
+      let nextPath = ngswitcher#toTS(notTS, targetFiles)
       Assert Equals(nextPath, './foo.component.ts')
+    End
+
+    It throws an error when the target ts file does not exist
+      let notTS = factory.create('./foo.html')
+      Throws ngswitcher#toTS(notTS, [notTS])
     End
   End
 
   Context the currentFile is a ts file
     Context if a previous file does not exist
-      It returns a default path (defalt: .html)
+      It returns html file path if exists (1)
         let ts = factory.create('./foo.component.ts')
-        let nextPath = ngswitcher#getTSPath(ts, targetFiles)
+        let nextPath = ngswitcher#toTS(ts, targetFiles)
         Assert Equals(nextPath, './foo.component.html')
-        let nextPath = ngswitcher#getTSPath(ts, targetFiles, '.css')
-        Assert Equals(nextPath, './foo.component.css')
+      End
+
+      It returns spec file path if exists (2)
+        let ts = factory.create('./foo.service.ts')
+        let spec = factory.create('./foo.service.spec.ts')
+        let nextPath = ngswitcher#toTS(ts, [ts, spec])
+        Assert Equals(nextPath, './foo.service.spec.ts')
+      End
+
+      It returns the currentFile path as is (3)
+        let ts = factory.create('./foo.ts')
+        let nextPath = ngswitcher#toTS(ts, [ts])
+        Assert Equals(nextPath, './foo.ts')
       End
     End
   End
 End
 
+Describe ngswitcher#toCSS(currentFile, targetFiles)
+  Before
+    let factory = ngswitcher#core#getAngularFileFactory()
+    let targetFiles = []
+    call add(targetFiles, factory.create('./foo.component.html'))
+    call add(targetFiles, factory.create('./foo.component.css'))
+    call add(targetFiles, factory.create('./foo.component.ts'))
+    call add(targetFiles, factory.create('./foo.component.spec.ts'))
+  End
+
+  Context the currentFile is not a css file
+    It returns a css file path
+      let notCSS = factory.create('./foo.component.html')
+      let nextPath = ngswitcher#toCSS(notCSS, targetFiles)
+      Assert Equals(nextPath, './foo.component.css')
+    End
+
+    It throws an error when the target css file does not exist
+      let notCSS = factory.create('./foo.html')
+      Throws ngswitcher#toCSS(notCSS, [notCSS])
+    End
+  End
+
+  Context the currentFile is a css file
+    Context if a previous file does not exist
+      It returns html file path if exists (1)
+        let css = factory.create('./foo.component.css')
+        let nextPath = ngswitcher#toCSS(css, targetFiles)
+        Assert Equals(nextPath, './foo.component.html')
+      End
+
+      It returns the currentFile path as is (2)
+        let css = factory.create('./foo.css')
+        let nextPath = ngswitcher#toCSS(css, [css])
+        Assert Equals(nextPath, './foo.css')
+      End
+    End
+  End
+End
+
+Describe ngswitcher#toHTML(currentFile, targetFiles)
+  Before
+    let factory = ngswitcher#core#getAngularFileFactory()
+    let targetFiles = []
+    call add(targetFiles, factory.create('./foo.component.html'))
+    call add(targetFiles, factory.create('./foo.component.css'))
+    call add(targetFiles, factory.create('./foo.component.ts'))
+    call add(targetFiles, factory.create('./foo.component.spec.ts'))
+  End
+
+  Context the currentFile is not a html file
+    It returns a html file path
+      let notHTML = factory.create('./foo.component.css')
+      let nextPath = ngswitcher#toHTML(notHTML, targetFiles)
+      Assert Equals(nextPath, './foo.component.html')
+    End
+
+    It throws an error when the target html file does not exist
+      let notHTML = factory.create('./foo.css')
+      Throws ngswitcher#toHTML(notCSS, [notCSS])
+    End
+  End
+
+  Context the currentFile is a html file
+    Context if a previous file does not exist
+      It returns ts file path if exists (1)
+        let html = factory.create('./foo.component.html')
+        let nextPath = ngswitcher#toHTML(html, targetFiles)
+        Assert Equals(nextPath, './foo.component.ts')
+      End
+
+      It returns the currentFile path as is (2)
+        let html = factory.create('./foo.html')
+        let nextPath = ngswitcher#toHTML(html, [html])
+        Assert Equals(nextPath, './foo.html')
+      End
+    End
+  End
+End
+
+Describe ngswitcher#toSpec(currentFile, targetFiles)
+  Before
+    let factory = ngswitcher#core#getAngularFileFactory()
+    let targetFiles = []
+    call add(targetFiles, factory.create('./foo.component.html'))
+    call add(targetFiles, factory.create('./foo.component.css'))
+    call add(targetFiles, factory.create('./foo.component.ts'))
+    call add(targetFiles, factory.create('./foo.component.spec.ts'))
+  End
+
+  Context the currentFile is not a spec file
+    It returns a spec file path
+      let notSpec = factory.create('./foo.component.html')
+      let nextPath = ngswitcher#toSpec(notSpec, targetFiles)
+      Assert Equals(nextPath, './foo.component.spec.ts')
+    End
+
+    It throws an error when the target spec file does not exist
+      let notSpec = factory.create('./foo.css')
+      Throws ngswitcher#toSpec(notSpec, [notSpec])
+    End
+  End
+
+  Context the currentFile is a spec file
+    Context if a previous file does not exist
+      It returns ts file path if exists (1)
+        let spec = factory.create('./foo.component.spec.ts')
+        let nextPath = ngswitcher#toSpec(spec, targetFiles)
+        Assert Equals(nextPath, './foo.component.ts')
+      End
+
+      It returns the currentFile path as is (2)
+        let spec = factory.create('./foo.spec.ts')
+        let nextPath = ngswitcher#toSpec(spec, [spec])
+        Assert Equals(nextPath, './foo.spec.ts')
+      End
+    End
+  End
+End
