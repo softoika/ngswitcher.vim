@@ -6,7 +6,7 @@ let s:factory = ngswitcher#core#getAngularFileFactory()
 
 function! ngswitcher#toTS(currentFile, targetFiles) abort
   if a:currentFile.isTS()
-    if exists('s:previousFile') && s:previousFile.isSameComponent(currentFile)
+    if exists('s:previousFile') && s:previousFile.isSameComponent(a:currentFile)
       return s:previousFile.path
     else 
       let targetHTMLFiles = filter(copy(a:targetFiles), 'v:val.isHTML()')
@@ -31,7 +31,7 @@ endfunction
 
 function! ngswitcher#toCSS(currentFile, targetFiles) abort
   if a:currentFile.isCSS()
-    if exists('s:previousFile') && s:previousFile.isSameComponent(currentFile)
+    if exists('s:previousFile') && s:previousFile.isSameComponent(a:currentFile)
       return s:previousFile.path
     else 
       let targetHTMLFiles = filter(copy(a:targetFiles), 'v:val.isHTML()')
@@ -52,7 +52,7 @@ endfunction
 
 function! ngswitcher#toHTML(currentFile, targetFiles) abort
   if a:currentFile.isHTML()
-    if exists('s:previousFile') && s:previousFile.isSameComponent(currentFile)
+    if exists('s:previousFile') && s:previousFile.isSameComponent(a:currentFile)
       return s:previousFile.path
     else 
       let targetTSFiles = filter(copy(a:targetFiles), 'v:val.isTS()')
@@ -73,7 +73,7 @@ endfunction
 
 function! ngswitcher#toSpec(currentFile, targetFiles) abort
   if a:currentFile.isSpec()
-    if exists('s:previousFile') && s:previousFile.isSameComponent(currentFile)
+    if exists('s:previousFile') && s:previousFile.isSameComponent(a:currentFile)
       return s:previousFile.path
     else 
       let targetTSFiles = filter(copy(a:targetFiles), 'v:val.isTS()')
