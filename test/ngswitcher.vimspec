@@ -3,13 +3,15 @@ Describe ngswitcher#switch(toFileFunc)
     It switches to ts file
       execute 'e test/fixture/app.component.html'
       call ngswitcher#switch(function('ngswitcher#toTS'))
-      Assert Equals(expand('%'), 'test/fixture/app.component.ts')
+      let currentPath = s:BackSlashToSlash(expand('%'))
+      Assert Equals(currentPath, 'test/fixture/app.component.ts')
     End
 
     It does nothing when switching from non-Angular files
       execute 'e test/fixture/app.component.json'
       call ngswitcher#switch(function('ngswitcher#toTS'))
-      Assert Equals(expand('%'), 'test/fixture/app.component.json')
+      let currentPath = s:BackSlashToSlash(expand('%'))
+      Assert Equals(currentPath, 'test/fixture/app.component.json')
     End
   End
   After
@@ -21,7 +23,8 @@ Describe ngswitcher#getAngularFilesInCurrentDirectory()
   It returns Angular files object (e.g. html/css/ts/spec.ts)
     execute 'e test/fixture/app.component.html'
     let files = ngswitcher#getAngularFilesInCurrentDirectory()
-    Assert Equals(map(files, 'v:val.path'), [
+    let filePaths = map(copy(files), 's:BackSlashToSlash(v:val.path)')
+    Assert Equals(filePaths, [
     \ 'test/fixture/app.component.css',
     \ 'test/fixture/app.component.html',
     \ 'test/fixture/app.component.spec.ts',
@@ -29,6 +32,10 @@ Describe ngswitcher#getAngularFilesInCurrentDirectory()
     \ ])
   End
 End
+
+function! s:BackSlashToSlash(text) abort
+  return substitute(a:text, '\', '/', 'g')
+endfunction
 
 Describe ngswitcher#toTS(currentFile, targetFiles)
   Before
