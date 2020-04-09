@@ -5,6 +5,12 @@ Describe ngswitcher#switch(toFileFunc)
       call ngswitcher#switch(function('ngswitcher#toTS'))
       Assert Equals(expand('%'), 'test/fixture/app.component.ts')
     End
+
+    It does nothing when switching from non-Angular files
+      execute 'e test/fixture/app.component.json'
+      call ngswitcher#switch(function('ngswitcher#toTS'))
+      Assert Equals(expand('%'), 'test/fixture/app.component.json')
+    End
   End
   After
     call ngswitcher#clearHistory()
