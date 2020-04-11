@@ -1,5 +1,29 @@
 # ngswitcher.vim ![CI](https://github.com/softoika/ngswitcher.vim/workflows/CI/badge.svg)
-A (neo)vim plugin inspired by [angular2-switcher](https://github.com/infinity1207/angular2-switcher), an extension of VSCode.
+Quickly switch between Angular files for Vim. Inspired by [angular2-switcher](https://github.com/infinity1207/angular2-switcher), an extension of VSCode.
+
+## Provided commands
+|Command|Description|
+|---|---|
+|`:NgSwitchTS` |  Open a TypeScript(.ts) file in the same component. If on ts file, open a previous file.
+|`:NgSwitchHTML` | Open a HTML(.html) file in the same component. If on html file, open a previous file.
+|`:NgSwitchCSS` | Open a stylesheet(.css/.scss/.sass/.stylus) file in the same component. If on stylesheet file, open a previous file.
+|`:NgSwitchSpec` | Open a spec (.spec.ts) file in the  same component. If on spec file, open a previous file.
+
+## Key mapping examples
+```vim
+let mapleader = "\<Space>"
+nnoremap <leader>u :<C-u>NgSwitchTS<CR>
+nnoremap <leader>i :<C-u>NgSwitchCSS<CR>
+nnoremap <leader>o :<C-u>NgSwitchHTML<CR>
+nnoremap <leader>p :<C-u>NgSwitchSpec<CR>
+```
+
+## Supported environment
+- Latest Vim(8.0 or later) and neovim
+- Multi-platform
+  - Windows
+  - macOS
+  - Linux
 
 ## Testing in local
 ```bash
