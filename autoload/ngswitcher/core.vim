@@ -1,6 +1,7 @@
 let s:save_cpo = &cpo
 set cpo&vim
 
+let s:logger = ngswitcher#debug_utils#getLogger()
 let s:AngularFile = {}
 
 function! s:AngularFile._isSameName(other) abort
@@ -15,15 +16,19 @@ endfunction
 function! s:AngularFile._isSameDirectory(other) abort
   let selfDirectory = get(self, 'directory', '')
   let otherDirectory = get(a:other, 'directory', '')
+  call s:logger.collect('selfDirectory: ' . selfDirectory)
+  call s:logger.collect('otherDirectory: ' . otherDirectory)
   if selfDirectory == '' || otherDirectory == ''
     return 0
   endif
+  call s:logger.collect('selfDirectory ==# otherDirectory: ' . (selfDirectory ==# otherDirectory))
   return selfDirectory ==# otherDirectory
 endfunction
 
 " The funtion name is isSameComponent, but the target file is not limited to
 " an Angular component (such as a service)
 function! s:AngularFile.isSameComponent(other) abort
+  call s:logger.collect(self.path . ': _isSameDirectory -> ')
   return self._isSameDirectory(a:other) && self._isSameName(a:other)
 endfunction
 

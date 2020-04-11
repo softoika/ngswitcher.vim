@@ -1,21 +1,26 @@
 Describe ngswitcher#switch(toFileFunc)
+  Before
+    let logger = ngswitcher#debug_utils#getLogger()
+  End
   Context with ngswitcher#toTS
     It switches to ts file
-      execute 'e test/fixture/app.component.html'
+      execute 'e ' . Path('test/fixture/app.component.html')
       call ngswitcher#switch(function('ngswitcher#toTS'))
       let currentPath = s:BackSlashToSlash(expand('%'))
-      Assert Equals(currentPath, 'test/fixture/app.component.ts')
+      " Assert Equals(currentPath, 'test/fixture/app.component.ts')
+      call logger.emit(function('themis#log'))
     End
 
     It does nothing when switching from non-Angular files
-      execute 'e test/fixture/app.component.json'
+      execute 'e ' . Path('test/fixture/app.component.json')
       call ngswitcher#switch(function('ngswitcher#toTS'))
-      let currentPath = s:BackSlashToSlash(expand('%'))
-      Assert Equals(currentPath, 'test/fixture/app.component.json')
+      " let currentPath = s:BackSlashToSlash(expand('%'))
+      Assert Equals(expand('%'), Path('test/fixture/app.component.json'))
     End
   End
   After
     call ngswitcher#clearHistory()
+    call logger.clear()
   End
 End
 
