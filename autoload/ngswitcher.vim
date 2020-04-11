@@ -45,7 +45,7 @@ function! ngswitcher#toCSS(currentFile, targetFiles) abort
     if len(targetCSSFiles) > 0
       return targetCSSFiles[0].path
     else
-      throw s:errorPrefix . 'the target ts file is not exist.'
+      throw s:errorPrefix . 'the target css file is not exist.'
     endif
   endif
 endfunction
@@ -66,7 +66,7 @@ function! ngswitcher#toHTML(currentFile, targetFiles) abort
     if len(targetHTMLFiles) > 0
       return targetHTMLFiles[0].path
     else
-      throw s:errorPrefix . 'the target ts file is not exist.'
+      throw s:errorPrefix . 'the target html file is not exist.'
     endif
   endif
 endfunction
@@ -87,7 +87,7 @@ function! ngswitcher#toSpec(currentFile, targetFiles) abort
     if len(targetSpecFiles) > 0
       return targetSpecFiles[0].path
     else
-      throw s:errorPrefix . 'the target ts file is not exist.'
+      throw s:errorPrefix . 'the target spec file is not exist.'
     endif
   endif
 endfunction
@@ -123,3 +123,6 @@ function! ngswitcher#clearHistory() abort
     unlet s:previousFile
   endif
 endfunction
+
+let &cpo = s:save_cpo
+unlet s:save_cpo

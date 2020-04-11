@@ -84,3 +84,5 @@ function! ngswitcher#core#getAngularFileFactory()
   return s:AngularFileFactory
 endfunction
 
+let &cpo = s:save_cpo
+unlet s:save_cpo
