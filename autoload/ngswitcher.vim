@@ -3,11 +3,8 @@ set cpo&vim
 
 let s:errorPrefix = 'ngswitcher: '
 let s:factory = ngswitcher#core#getAngularFileFactory()
-let s:logger = ngswitcher#debug_utils#getLogger()
 
 function! ngswitcher#toTS(currentFile, targetFiles) abort
-  let targetPaths = join(map(copy(a:targetFiles), 'v:val.path'), ', ')
-  call s:logger.collect('targetFiles: [' . targetPaths . ']')
   if a:currentFile.isTS()
     if exists('s:previousFile') && s:previousFile.isSameComponent(a:currentFile)
       return s:previousFile.path
@@ -24,13 +21,10 @@ function! ngswitcher#toTS(currentFile, targetFiles) abort
     endif
   else
     let targetTSFiles = filter(copy(a:targetFiles), 'v:val.isTS()')
-    let tsPaths = join(map(copy(targetTSFiles), 'v:val.path'), ', ')
-    call s:logger.collect('tsPaths: [' . tsPaths . ']')
     if len(targetTSFiles) > 0
       return targetTSFiles[0].path
     else
-      " throw s:errorPrefix . 'the target ts file is not exist.'
-      return a:currentFile.path
+      throw s:errorPrefix . 'the target ts file is not exist.'
     endif
   endif
 endfunction
@@ -102,19 +96,12 @@ endfunction
 " Example of usage: call ngswitcher#switch(function('ngswitcher#toTS'))
 function! ngswitcher#switch(toFileFunc) abort
   let currentFile = s:factory.create(expand('%'))
-  call s:logger.collect('currentFile.path: ' . currentFile.path)
-  call s:logger.collect('currentFile.directory: ' . currentFile.directory)
-  call s:logger.collect('currentFile.name: ' . currentFile.name)
-  call s:logger.collect('currentFile.extension: ' . currentFile.extension)
-  call s:logger.collect('')
   if !currentFile.hasDefinedExtension()
    " do nothing
     return
   endif
   let targetFiles = ngswitcher#getAngularFilesInCurrentDirectory()
   let targetFiles = filter(copy(targetFiles), 'v:val.isSameComponent(currentFile)')
-  let paths = join(map(copy(targetFiles), 'v:val.path'), ", ")
-  call s:logger.collect('After isSameComponent: [' . paths . ']')
   let nextPath = a:toFileFunc(currentFile, targetFiles)
   if filereadable(nextPath)
     execute 'e ' . nextPath

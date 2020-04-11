@@ -5,7 +5,3 @@ function! Path(path) abort
   return a:path
 endfunction
 
-function! BackSlashToSlash(text) abort
-  return substitute(a:text, '\', '/', 'g')
-endfunction
-

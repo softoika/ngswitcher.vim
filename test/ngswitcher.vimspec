@@ -1,46 +1,36 @@
 Describe ngswitcher#switch(toFileFunc)
-  Before
-    let logger = ngswitcher#debug_utils#getLogger()
-  End
   Context with ngswitcher#toTS
     It switches to ts file
       execute 'e ' . Path('test/fixture/app.component.html')
       call ngswitcher#switch(function('ngswitcher#toTS'))
-      let currentPath = s:BackSlashToSlash(expand('%'))
-      " Assert Equals(currentPath, 'test/fixture/app.component.ts')
-      call logger.emit(function('themis#log'))
+      Assert Equals(expand('%'), Path('test/fixture/app.component.ts'))
     End
 
     It does nothing when switching from non-Angular files
       execute 'e ' . Path('test/fixture/app.component.json')
       call ngswitcher#switch(function('ngswitcher#toTS'))
-      " let currentPath = s:BackSlashToSlash(expand('%'))
       Assert Equals(expand('%'), Path('test/fixture/app.component.json'))
     End
   End
+
   After
     call ngswitcher#clearHistory()
-    call logger.clear()
   End
 End
 
 Describe ngswitcher#getAngularFilesInCurrentDirectory()
   It returns Angular files object (e.g. html/css/ts/spec.ts)
-    execute 'e test/fixture/app.component.html'
+    execute 'e ' . Path('test/fixture/app.component.html')
     let files = ngswitcher#getAngularFilesInCurrentDirectory()
-    let filePaths = map(copy(files), 's:BackSlashToSlash(v:val.path)')
+    let filePaths = map(copy(files), 'v:val.path')
     Assert Equals(filePaths, [
-    \ 'test/fixture/app.component.css',
-    \ 'test/fixture/app.component.html',
-    \ 'test/fixture/app.component.spec.ts',
-    \ 'test/fixture/app.component.ts'
+    \ Path('test/fixture/app.component.css'),
+    \ Path('test/fixture/app.component.html'),
+    \ Path('test/fixture/app.component.spec.ts'),
+    \ Path('test/fixture/app.component.ts')
     \ ])
   End
 End
-
-function! s:BackSlashToSlash(text) abort
-  return substitute(a:text, '\', '/', 'g')
-endfunction
 
 Describe ngswitcher#toTS(currentFile, targetFiles)
   Before
