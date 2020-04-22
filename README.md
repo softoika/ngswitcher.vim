@@ -11,11 +11,10 @@ Quickly switch between Angular files for Vim. Inspired by [angular2-switcher](ht
 
 ## Key mapping examples
 ```vim
-let mapleader = "\<Space>"
-nnoremap <leader>u :<C-u>NgSwitchTS<CR>
-nnoremap <leader>i :<C-u>NgSwitchCSS<CR>
-nnoremap <leader>o :<C-u>NgSwitchHTML<CR>
-nnoremap <leader>p :<C-u>NgSwitchSpec<CR>
+nnoremap <Leader>u :<C-u>NgSwitchTS<CR>
+nnoremap <Leader>i :<C-u>NgSwitchCSS<CR>
+nnoremap <Leader>o :<C-u>NgSwitchHTML<CR>
+nnoremap <Leader>p :<C-u>NgSwitchSpec<CR>
 ```
 
 ## Supported environment
