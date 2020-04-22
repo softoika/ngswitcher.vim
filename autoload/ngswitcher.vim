@@ -102,13 +102,19 @@ function! ngswitcher#switch(toFileFunc) abort
   endif
   let targetFiles = ngswitcher#getAngularFilesInCurrentDirectory()
   let targetFiles = filter(copy(targetFiles), 'v:val.isSameComponent(currentFile)')
-  let nextPath = a:toFileFunc(currentFile, targetFiles)
-  if filereadable(nextPath)
-    execute 'e ' . nextPath
-    let s:previousFile = currentFile
-  else
-    throw s:errorPrefix . nextPath . ' does not exist.'
-  endif
+  try
+    let nextPath = a:toFileFunc(currentFile, targetFiles)
+    if filereadable(nextPath)
+      execute 'e ' . nextPath
+      let s:previousFile = currentFile
+    else
+      throw s:errorPrefix . nextPath . ' does not exist.'
+    endif
+  catch
+    echohl ErrorMsg
+    echomsg v:exception
+    echohl None
+  endtry
 endfunction
 
 function! ngswitcher#getAngularFilesInCurrentDirectory() abort
