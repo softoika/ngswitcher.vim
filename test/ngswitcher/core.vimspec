@@ -162,3 +162,43 @@ Describe AngularFile
   End
 End
 
+Describe ComponentFactory
+  Before
+    let factory = ngswitcher#core#getComponentFactory()
+  End
+
+  It creates a component that has currentFile and component files
+    let currentPath = 'foo.html'
+    let filePaths = ['foo.html', 'foo.ts', 'foo.css', 'foo.spec.ts']
+    let component = factory.create(currentPath, filePaths)
+    Assert Equals(component.getCurrentFile().path, 'foo.html')
+    Assert Equals(component.hasHTML(), 1)
+    Assert Equals(component.hasCSS(), 1)
+    Assert Equals(component.hasTS(), 1)
+    Assert Equals(component.hasSpec(), 1)
+    Assert Equals(component.getHTML().path, 'foo.html')
+    Assert Equals(component.getCSS().path, 'foo.css')
+    Assert Equals(component.getTS().path, 'foo.ts')
+    Assert Equals(component.getSpec().path, 'foo.spec.ts')
+  End
+
+  It excludes another component file
+    let currentPath = 'foo.html'
+    let filePaths = ['foo.html', 'foo.ts', 'bar.css']
+    let component = factory.create(currentPath, filePaths)
+    Assert Equals(component.getCurrentFile().path, 'foo.html')
+    Assert Equals(component.hasHTML(), 1)
+    Assert Equals(component.hasTS(), 1)
+    Assert Equals(component.getHTML().path, 'foo.html')
+    Assert Equals(component.getTS().path, 'foo.ts')
+
+    Assert Equals(component.hasCSS(), 0)
+  End
+
+  It throws an error when the current file is not a component file
+    let currentPath = 'foo.json'
+    let filePaths = ['foo.json', 'foo.ts']
+    Throws factory.create(currentPath, filePaths)
+  End
+End
+
