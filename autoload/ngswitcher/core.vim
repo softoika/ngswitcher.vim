@@ -84,5 +84,74 @@ function! ngswitcher#core#getAngularFileFactory()
   return s:AngularFileFactory
 endfunction
 
+let s:Component = {}
+
+function! s:Component.hasHTML() abort
+  return has_key(self, 'htmlFile')
+endfunction
+
+function! s:Component.hasCSS() abort
+  return has_key(self, 'cssFile')
+endfunction
+
+function! s:Component.hasTS() abort
+  return has_key(self, 'tsFile')
+endfunction
+
+function! s:Component.hasSpec() abort
+  return has_key(self, 'specFile')
+endfunction
+
+function! s:Component.getHTML() abort
+  return get(self, 'htmlFile')
+endfunction
+
+function! s:Component.getCSS() abort
+  return get(self, 'cssFile')
+endfunction
+
+function! s:Component.getTS() abort
+  return get(self, 'tsFile')
+endfunction
+
+function! s:Component.getSpec() abort
+  return get(self, 'specFile')
+endfunction
+
+function! s:Component.getCurrentFile() abort
+  return get(self, 'currentFile')
+endfunction
+
+let s:ComponentFactory = {}
+
+function! s:ComponentFactory.create(currentPath, filePaths) abort
+  let component = deepcopy(s:Component)
+  let currentFile = s:AngularFileFactory.create(a:currentPath)
+  if currentFile.hasDefinedExtension()
+    let component.currentFile = currentFile
+  else 
+    throw 'ngswitcher: Not available from ' . a:currentFile
+  endif
+  let files = map(copy(a:filePaths), 's:AngularFileFactory.create(v:val)')
+  let files = filter(copy(files), 'v:val.hasDefinedExtension()')
+  let files = filter(copy(files), 'v:val.isSameComponent(currentFile)')
+  for file in files
+    if file.isHTML()
+      let component.htmlFile = file
+    elseif file.isCSS()
+      let component.cssFile = file
+    elseif file.isTS()
+      let component.tsFile = file
+    elseif file.isSpec()
+      let component.specFile = file
+    endif
+  endfor
+  return component
+endfunction
+
+function! ngswitcher#core#getComponentFactory()
+  return s:ComponentFactory
+endfunction
+
 let &cpo = s:save_cpo
 unlet s:save_cpo

@@ -18,181 +18,188 @@ Describe ngswitcher#switch(toFileFunc)
   End
 End
 
-Describe ngswitcher#getAngularFilesInCurrentDirectory()
-  It returns Angular files object (e.g. html/css/ts/spec.ts)
-    execute 'e ' . Path('test/fixture/app.component.html')
-    let files = ngswitcher#getAngularFilesInCurrentDirectory()
-    let filePaths = map(copy(files), 'v:val.path')
-    Assert Equals(filePaths, [
-    \ Path('test/fixture/app.component.css'),
-    \ Path('test/fixture/app.component.html'),
-    \ Path('test/fixture/app.component.spec.ts'),
-    \ Path('test/fixture/app.component.ts')
-    \ ])
-  End
-End
-
-Describe ngswitcher#toTS(currentFile, targetFiles)
+Describe ngswitcher#toTS(component)
   Before
-    let factory = ngswitcher#core#getAngularFileFactory()
-    let targetFiles = []
-    call add(targetFiles, factory.create('./foo.component.html'))
-    call add(targetFiles, factory.create('./foo.component.css'))
-    call add(targetFiles, factory.create('./foo.component.ts'))
-    call add(targetFiles, factory.create('./foo.component.spec.ts'))
+    let componentFactory = ngswitcher#core#getComponentFactory()
+    let targetFiles = [
+    \ './foo.component.html',
+    \ './foo.component.css',
+    \ './foo.component.ts',
+    \ './foo.component.spec.ts'
+    \ ]
   End
 
   Context the currentFile is not a ts file
     It returns a ts file path
-      let notTS = factory.create('./foo.component.html')
-      let nextPath = ngswitcher#toTS(notTS, targetFiles)
+      let notTS = './foo.component.html'
+      let component = componentFactory.create(notTS, targetFiles)
+      let nextPath = ngswitcher#toTS(component)
       Assert Equals(nextPath, './foo.component.ts')
     End
 
     It throws an error when the target ts file does not exist
-      let notTS = factory.create('./foo.html')
-      Throws ngswitcher#toTS(notTS, [notTS])
+      let notTS = './foo.html'
+      let component = componentFactory.create(notTS, [notTS])
+      Throws ngswitcher#toTS(component)
     End
   End
 
   Context the currentFile is a ts file
     Context if a previous file does not exist
       It returns html file path if exists (1)
-        let ts = factory.create('./foo.component.ts')
-        let nextPath = ngswitcher#toTS(ts, targetFiles)
+        let ts = './foo.component.ts'
+        let component = componentFactory.create(ts, targetFiles)
+        let nextPath = ngswitcher#toTS(component)
         Assert Equals(nextPath, './foo.component.html')
       End
 
       It returns spec file path if exists (2)
-        let ts = factory.create('./foo.service.ts')
-        let spec = factory.create('./foo.service.spec.ts')
-        let nextPath = ngswitcher#toTS(ts, [ts, spec])
+        let ts = './foo.service.ts'
+        let spec = './foo.service.spec.ts'
+        let component = componentFactory.create(ts, [ts, spec])
+        let nextPath = ngswitcher#toTS(component)
         Assert Equals(nextPath, './foo.service.spec.ts')
       End
 
       It returns the currentFile path as is (3)
-        let ts = factory.create('./foo.ts')
-        let nextPath = ngswitcher#toTS(ts, [ts])
+        let ts = './foo.ts'
+        let component = componentFactory.create(ts, [ts])
+        let nextPath = ngswitcher#toTS(component)
         Assert Equals(nextPath, './foo.ts')
       End
     End
   End
 End
 
-Describe ngswitcher#toCSS(currentFile, targetFiles)
+Describe ngswitcher#toCSS(component)
   Before
-    let factory = ngswitcher#core#getAngularFileFactory()
-    let targetFiles = []
-    call add(targetFiles, factory.create('./foo.component.html'))
-    call add(targetFiles, factory.create('./foo.component.css'))
-    call add(targetFiles, factory.create('./foo.component.ts'))
-    call add(targetFiles, factory.create('./foo.component.spec.ts'))
+    let componentFactory = ngswitcher#core#getComponentFactory()
+    let targetFiles = [
+    \ './foo.component.html',
+    \ './foo.component.css',
+    \ './foo.component.ts',
+    \ './foo.component.spec.ts'
+    \ ]
   End
 
   Context the currentFile is not a css file
     It returns a css file path
-      let notCSS = factory.create('./foo.component.html')
-      let nextPath = ngswitcher#toCSS(notCSS, targetFiles)
+      let notCSS = './foo.component.html'
+      let component = componentFactory.create(notCSS, targetFiles)
+      let nextPath = ngswitcher#toCSS(component)
       Assert Equals(nextPath, './foo.component.css')
     End
 
     It throws an error when the target css file does not exist
-      let notCSS = factory.create('./foo.html')
-      Throws ngswitcher#toCSS(notCSS, [notCSS])
+      let notCSS = './foo.html'
+      let component = componentFactory.create(notCSS, [notCSS])
+      Throws ngswitcher#toCSS(component)
     End
   End
 
   Context the currentFile is a css file
     Context if a previous file does not exist
       It returns html file path if exists (1)
-        let css = factory.create('./foo.component.css')
-        let nextPath = ngswitcher#toCSS(css, targetFiles)
+        let css = './foo.component.css'
+        let component = componentFactory.create(css, targetFiles)
+        let nextPath = ngswitcher#toCSS(component)
         Assert Equals(nextPath, './foo.component.html')
       End
 
       It returns the currentFile path as is (2)
-        let css = factory.create('./foo.css')
-        let nextPath = ngswitcher#toCSS(css, [css])
+        let css = './foo.css'
+        let component = componentFactory.create(css, [css])
+        let nextPath = ngswitcher#toCSS(component)
         Assert Equals(nextPath, './foo.css')
       End
     End
   End
 End
 
-Describe ngswitcher#toHTML(currentFile, targetFiles)
+Describe ngswitcher#toHTML(component)
   Before
-    let factory = ngswitcher#core#getAngularFileFactory()
-    let targetFiles = []
-    call add(targetFiles, factory.create('./foo.component.html'))
-    call add(targetFiles, factory.create('./foo.component.css'))
-    call add(targetFiles, factory.create('./foo.component.ts'))
-    call add(targetFiles, factory.create('./foo.component.spec.ts'))
+    let componentFactory = ngswitcher#core#getComponentFactory()
+    let targetFiles = [
+    \ './foo.component.html',
+    \ './foo.component.css',
+    \ './foo.component.ts',
+    \ './foo.component.spec.ts'
+    \ ]
   End
 
   Context the currentFile is not a html file
     It returns a html file path
-      let notHTML = factory.create('./foo.component.css')
-      let nextPath = ngswitcher#toHTML(notHTML, targetFiles)
+      let notHTML = './foo.component.css'
+      let component = componentFactory.create(notHTML, targetFiles)
+      let nextPath = ngswitcher#toHTML(component)
       Assert Equals(nextPath, './foo.component.html')
     End
 
     It throws an error when the target html file does not exist
-      let notHTML = factory.create('./foo.css')
-      Throws ngswitcher#toHTML(notCSS, [notCSS])
+      let notHTML = './foo.css'
+      let component = componentFactory.create(notHTML, [notHTML])
+      Throws ngswitcher#toHTML(component)
     End
   End
 
   Context the currentFile is a html file
     Context if a previous file does not exist
       It returns ts file path if exists (1)
-        let html = factory.create('./foo.component.html')
-        let nextPath = ngswitcher#toHTML(html, targetFiles)
+        let html = './foo.component.html'
+        let component = componentFactory.create(html, targetFiles)
+        let nextPath = ngswitcher#toHTML(component)
         Assert Equals(nextPath, './foo.component.ts')
       End
 
       It returns the currentFile path as is (2)
-        let html = factory.create('./foo.html')
-        let nextPath = ngswitcher#toHTML(html, [html])
+        let html = './foo.html'
+        let component = componentFactory.create(html, [html])
+        let nextPath = ngswitcher#toHTML(component)
         Assert Equals(nextPath, './foo.html')
       End
     End
   End
 End
 
-Describe ngswitcher#toSpec(currentFile, targetFiles)
+Describe ngswitcher#toSpec(component)
   Before
-    let factory = ngswitcher#core#getAngularFileFactory()
-    let targetFiles = []
-    call add(targetFiles, factory.create('./foo.component.html'))
-    call add(targetFiles, factory.create('./foo.component.css'))
-    call add(targetFiles, factory.create('./foo.component.ts'))
-    call add(targetFiles, factory.create('./foo.component.spec.ts'))
+    let componentFactory = ngswitcher#core#getComponentFactory()
+    let targetFiles = [
+    \ './foo.component.html',
+    \ './foo.component.css',
+    \ './foo.component.ts',
+    \ './foo.component.spec.ts'
+    \ ]
   End
 
   Context the currentFile is not a spec file
     It returns a spec file path
-      let notSpec = factory.create('./foo.component.html')
-      let nextPath = ngswitcher#toSpec(notSpec, targetFiles)
+      let notSpec = './foo.component.html'
+      let component = componentFactory.create(notSpec, targetFiles)
+      let nextPath = ngswitcher#toSpec(component)
       Assert Equals(nextPath, './foo.component.spec.ts')
     End
 
     It throws an error when the target spec file does not exist
-      let notSpec = factory.create('./foo.css')
-      Throws ngswitcher#toSpec(notSpec, [notSpec])
+      let notSpec = './foo.css'
+      let component = componentFactory.create(notSpec, [notSpec])
+      Throws ngswitcher#toSpec(component)
     End
   End
 
   Context the currentFile is a spec file
     Context if a previous file does not exist
       It returns ts file path if exists (1)
-        let spec = factory.create('./foo.component.spec.ts')
-        let nextPath = ngswitcher#toSpec(spec, targetFiles)
+        let spec = './foo.component.spec.ts'
+        let component = componentFactory.create(spec, targetFiles)
+        let nextPath = ngswitcher#toSpec(component)
         Assert Equals(nextPath, './foo.component.ts')
       End
 
       It returns the currentFile path as is (2)
-        let spec = factory.create('./foo.spec.ts')
-        let nextPath = ngswitcher#toSpec(spec, [spec])
+        let spec = './foo.spec.ts'
+        let component = componentFactory.create(spec, [spec])
+        let nextPath = ngswitcher#toSpec(component)
         Assert Equals(nextPath, './foo.spec.ts')
       End
     End
