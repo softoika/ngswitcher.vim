@@ -89,7 +89,7 @@ function! ngswitcher#toSpec(component) abort
   endif
 endfunction
 
-" The argument of getFilePathFunc is a Funcref such as ngswitcher#getTSPath().
+" The argument of toFileFunc is a Funcref such as ngswitcher#toTS().
 " Example of usage: call ngswitcher#switch(function('ngswitcher#toTS'))
 function! ngswitcher#switch(toFileFunc) abort
   let currentPath = expand('%')
