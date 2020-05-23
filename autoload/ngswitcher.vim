@@ -117,5 +117,19 @@ function! ngswitcher#clearHistory() abort
   endif
 endfunction
 
+function! ngswitcher#showList() abort
+  let currentPath = expand('%')
+  let directory = expand('%:h')
+  let filePaths = split(expand(directory . '/*'), '\n')
+  try
+    let component = s:componentFactory.create(currentPath, filePaths)
+    call ngswitcher#window#showList(component)
+  catch
+    echohl ErrorMsg
+    echomsg v:exception
+    echohl None
+  endtry
+endfunction
+
 let &cpo = s:save_cpo
 unlet s:save_cpo

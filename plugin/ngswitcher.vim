@@ -18,3 +18,7 @@ endif
 if !exists(':NgSwitchSpec')
   command NgSwitchSpec :call ngswitcher#switch(function('ngswitcher#toSpec'))
 endif
+
+if !exists(':NgShowList')
+  command NgShowList :call ngswitcher#showList()
+endif
