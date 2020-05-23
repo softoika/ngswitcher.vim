@@ -1,0 +1,85 @@
+Describe WindowFactory
+  Before
+    let factory = ngswitcher#window#getWindowFactory()
+  End
+
+  Context currentFile: html, files: { html, css, ts, spec.ts }
+    Before
+      let component = ngswitcher#core#getComponentFactory().create('foo.html', [
+            \ 'foo.css',
+            \ 'foo.html',
+            \ 'foo.spec.ts',
+            \ 'foo.ts'
+            \ ])
+    End
+
+    It creates window with 4 options
+      let window = factory.create(component)
+      Assert Equals(window.firstLine, 2)
+      Assert Equals(window.currentLine, 2)
+      Assert Equals(window.lastLine, 4)
+      " A highlight column offset starts from 5th character
+      Assert Equals(window.hlColOffset, 5)
+      let files = window.files
+      Assert Equals(len(files), 4)
+      Assert Equals(files[0].path, 'foo.html')
+      Assert Equals(files[1].path, 'foo.css')
+      Assert Equals(files[2].path, 'foo.ts')
+      Assert Equals(files[3].path, 'foo.spec.ts')
+      let textLines = window.textLines
+      Assert Equals(len(textLines), 4)
+      Assert Equals(textLines[0], '[x] foo.html')
+      Assert Equals(textLines[1], '[i] foo.css')
+      Assert Equals(textLines[2], '[u] foo.ts')
+      Assert Equals(textLines[3], '[p] foo.spec.ts')
+    End
+  End
+
+  Context currentFile: ts, files: { ts, spec.ts }
+    Before
+      let component = ngswitcher#core#getComponentFactory().create('foo.ts', [
+            \ 'foo.spec.ts',
+            \ 'foo.ts'
+            \ ])
+    End
+
+    It creates window with 2 options
+      let window = factory.create(component)
+      Assert Equals(window.firstLine, 2)
+      Assert Equals(window.currentLine, 2)
+      Assert Equals(window.lastLine, 2)
+      Assert Equals(window.hlColOffset, 5)
+      let files = window.files
+      Assert Equals(len(files), 2)
+      Assert Equals(files[0].path, 'foo.ts')
+      Assert Equals(files[1].path, 'foo.spec.ts')
+      let textLines = window.textLines
+      Assert Equals(len(textLines), 2)
+      Assert Equals(textLines[0], '[x] foo.ts')
+      Assert Equals(textLines[1], '[p] foo.spec.ts')
+    End
+  End
+
+  Context currentFile: ts, files: { ts }
+    Before
+      let component = ngswitcher#core#getComponentFactory().create('foo.ts', [
+            \ 'foo.ts'
+            \ ])
+    End
+
+    It creates window with single option
+      let window = factory.create(component)
+      Assert Equals(window.firstLine, 1)
+      Assert Equals(window.currentLine, 1)
+      Assert Equals(window.lastLine, 1)
+      Assert Equals(window.hlColOffset, 5)
+      let files = window.files
+      Assert Equals(len(files), 1)
+      Assert Equals(files[0].path, 'foo.ts')
+      let textLines = window.textLines
+      Assert Equals(len(textLines), 1)
+      Assert Equals(textLines[0], '[x] foo.ts')
+    End
+  End
+End
+

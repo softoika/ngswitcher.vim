@@ -141,10 +141,10 @@ endfunction
 let s:WindowFactory = {}
 
 function! s:WindowFactory.create(component) abort
-  let htmlKey = substitute(g:ngswitcher_list_shortcut_key_html, '\', '', 'g')
-  let tsKey = substitute(g:ngswitcher_list_shortcut_key_ts, '\', '', 'g')
-  let cssKey = substitute(g:ngswitcher_list_shortcut_key_css, '\', '', 'g')
-  let specKey = substitute(g:ngswitcher_list_shortcut_key_spec, '\', '', 'g')
+  let htmlKey = g:ngswitcher_list_shortcut_key_html
+  let tsKey = g:ngswitcher_list_shortcut_key_ts
+  let cssKey = g:ngswitcher_list_shortcut_key_css
+  let specKey = g:ngswitcher_list_shortcut_key_spec
   let maxKeyLen = max([len(htmlKey), len(tsKey), len(cssKey), len(specKey)])
 
   let currentFile = a:component.getCurrentFile()
@@ -171,6 +171,9 @@ function! s:WindowFactory.create(component) abort
   let window.firstLine = len(files) < 2 ? len(files) : 2
   let window.currentLine = window.firstLine
   let window.lastLine = len(files)
+  " For example, if maxKeyLen is 1
+  " 1 2           3  4  5
+  " [ <maxKeyLen> ] ' ' <hlColOffset>
   let window.hlColOffset = maxKeyLen + 4
   let window.files = files
   let window.textLines = textLines
