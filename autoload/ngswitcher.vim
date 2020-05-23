@@ -6,7 +6,7 @@ let s:componentFactory = ngswitcher#core#getComponentFactory()
 function! ngswitcher#toTS(component) abort
   let currentFile = a:component.getCurrentFile()
   if currentFile.isTS()
-    if exists('s:previousFile') && s:previousFile.isSameComponent(a:currentFile)
+    if exists('s:previousFile') && s:previousFile.isSameComponent(currentFile)
       return s:previousFile.path
     else
       if a:component.hasHTML()
@@ -21,7 +21,8 @@ function! ngswitcher#toTS(component) abort
     if a:component.hasTS()
       return a:component.getTS().path
     else
-      throw 'ngswitcher: The target ts file is not exist.'
+      echo 'ngswitcher: The target ts file is not exist.'
+      return s:getAnyFilePath(currentFile, a:component)
     endif
   endif
 endfunction
@@ -42,7 +43,8 @@ function! ngswitcher#toCSS(component) abort
     if a:component.hasCSS()
       return a:component.getCSS().path
     else
-      throw 'ngswitcher: The target css file is not exist.'
+      echo 'ngswitcher: The target css file is not exist.'
+      return s:getAnyFilePath(currentFile, a:component)
     endif
   endif
 endfunction
@@ -63,8 +65,8 @@ function! ngswitcher#toHTML(component) abort
     if a:component.hasHTML()
       return a:component.getHTML().path
     else
-      throw 'ngswitcher: The target html file is not exist.'
-    endif
+      echo 'ngswitcher: The target html file is not exist.'
+      return s:getAnyFilePath(currentFile, a:component)
   endif
 endfunction
 
@@ -84,8 +86,23 @@ function! ngswitcher#toSpec(component) abort
     if a:component.hasSpec()
       return a:component.getSpec().path
     else
-      throw 'ngswitcher: The target spec file is not exist.'
+      echo 'ngswitcher: The target spec file is not exist.'
+      return s:getAnyFilePath(currentFile, a:component)
     endif
+  endif
+endfunction
+
+function! s:getAnyFilePath(currentFile, component) abort
+  if a:component.hasHTML() && !a:currentFile.isHTML()
+    return a:component.getHTML().path
+  elseif a:component.hasCSS() && !a:currentFile.isCSS()
+    return a:component.getCSS().path
+  elseif a:component.hasTS() && !a:currentFile.isTS()
+    return a:component.getTS().path
+  elseif a:component.hasSpec() && !a:currentFile.isSpec()
+    return a:component.getSpec().path
+  else
+    return a:currentFile.path
   endif
 endfunction
 

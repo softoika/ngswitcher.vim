@@ -37,10 +37,11 @@ Describe ngswitcher#toTS(component)
       Assert Equals(nextPath, './foo.component.ts')
     End
 
-    It throws an error when the target ts file does not exist
+    It returns any file path existing when the target ts file does not exist
       let notTS = './foo.html'
       let component = componentFactory.create(notTS, [notTS])
-      Throws ngswitcher#toTS(component)
+      let nextPath =  ngswitcher#toTS(component)
+      Assert Equals(nextPath, notTS)
     End
   End
 
@@ -90,10 +91,11 @@ Describe ngswitcher#toCSS(component)
       Assert Equals(nextPath, './foo.component.css')
     End
 
-    It throws an error when the target css file does not exist
+    It returns any file path existing when the target css file does not exist
       let notCSS = './foo.html'
       let component = componentFactory.create(notCSS, [notCSS])
-      Throws ngswitcher#toCSS(component)
+      let nextPath =  ngswitcher#toCSS(component)
+      Assert Equals(nextPath, notCSS)
     End
   End
 
@@ -135,10 +137,11 @@ Describe ngswitcher#toHTML(component)
       Assert Equals(nextPath, './foo.component.html')
     End
 
-    It throws an error when the target html file does not exist
+    It returns any file path existing when the target html file does not exist
       let notHTML = './foo.css'
       let component = componentFactory.create(notHTML, [notHTML])
-      Throws ngswitcher#toHTML(component)
+      let nextPath = ngswitcher#toHTML(component)
+      Assert Equals(nextPath, notHTML)
     End
   End
 
@@ -180,10 +183,11 @@ Describe ngswitcher#toSpec(component)
       Assert Equals(nextPath, './foo.component.spec.ts')
     End
 
-    It throws an error when the target spec file does not exist
+    It returns any file path existing when the target spec file does not exist
       let notSpec = './foo.css'
       let component = componentFactory.create(notSpec, [notSpec])
-      Throws ngswitcher#toSpec(component)
+      let nextPath = ngswitcher#toSpec(component)
+      Assert Equals(nextPath, notSpec)
     End
   End
 
