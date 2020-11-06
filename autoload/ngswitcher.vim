@@ -108,7 +108,7 @@ endfunction
 
 " The argument of toFileFunc is a Funcref such as ngswitcher#toTS().
 " Example of usage: call ngswitcher#switch(function('ngswitcher#toTS'))
-function! ngswitcher#switch(toFileFunc) abort
+function! ngswitcher#switch(toFileFunc, command) abort
   let currentPath = expand('%')
   let directory = expand('%:h')
   let filePaths = split(expand(directory . '/*'), '\n')
@@ -116,7 +116,7 @@ function! ngswitcher#switch(toFileFunc) abort
     let component = s:componentFactory.create(currentPath, filePaths)
     let nextPath = a:toFileFunc(component)
     if filereadable(nextPath)
-      execute 'e ' . nextPath
+      execute a:command . ' ' . nextPath
       let s:previousFile = component.getCurrentFile()
     else
       throw 'ngswitcher: ' . nextPath . ' does not exist.'

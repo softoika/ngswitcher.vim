@@ -1,15 +1,33 @@
-Describe ngswitcher#switch(toFileFunc)
-  Context with ngswitcher#toTS
+Describe ngswitcher#switch(toFileFunc, command)
+  Context with edit command
     It switches to ts file
       execute 'e ' . Path('test/fixture/app.component.html')
-      call ngswitcher#switch(function('ngswitcher#toTS'))
+      call ngswitcher#switch(function('ngswitcher#toTS'), 'edit')
       Assert Equals(expand('%'), Path('test/fixture/app.component.ts'))
     End
 
     It does nothing when switching from non-Angular files
       execute 'e ' . Path('test/fixture/app.component.json')
-      call ngswitcher#switch(function('ngswitcher#toTS'))
+      call ngswitcher#switch(function('ngswitcher#toTS'), 'edit')
       Assert Equals(expand('%'), Path('test/fixture/app.component.json'))
+    End
+  End
+
+  Context with split command
+    It switches to ts file and splits horizontally
+      execute 'e ' . Path('test/fixture/app.component.html')
+      call ngswitcher#switch(function('ngswitcher#toTS'), 'split')
+      execute 'normal \<C-w>j'
+      Assert Equals(expand('%'), Path('test/fixture/app.component.ts'))
+    End
+  End
+
+  Context with vsplit command
+    It switches to ts file and splits vertically
+      execute 'e ' . Path('test/fixture/app.component.html')
+      call ngswitcher#switch(function('ngswitcher#toTS'), 'vsplit')
+      execute 'normal \<C-w>l'
+      Assert Equals(expand('%'), Path('test/fixture/app.component.ts'))
     End
   End
 
