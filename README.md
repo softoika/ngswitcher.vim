@@ -9,6 +9,8 @@ Quickly switch between Angular files for Vim. Inspired by [angular2-switcher](ht
 |`:NgSwitchCSS` | Open a stylesheet(.css/.scss/.sass/.stylus) file in the same component. If on stylesheet file, open a previous file.
 |`:NgSwitchSpec` | Open a spec (.spec.ts) file in the  same component. If on spec file, open a previous file.
 
+:bulb: `:SNgSwitchTS`, `:VNgSwitchTS`, etc. splits window horizontally or vertically.
+
 ## Key mapping examples
 ```vim
 nnoremap <Leader>u :<C-u>NgSwitchTS<CR>
