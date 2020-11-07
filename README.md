@@ -17,6 +17,18 @@ nnoremap <Leader>u :<C-u>NgSwitchTS<CR>
 nnoremap <Leader>i :<C-u>NgSwitchCSS<CR>
 nnoremap <Leader>o :<C-u>NgSwitchHTML<CR>
 nnoremap <Leader>p :<C-u>NgSwitchSpec<CR>
+
+" with horizontal split
+nnoremap <leader>su :<C-u>SNgSwitchTS<CR>
+nnoremap <leader>si :<C-u>SNgSwitchCSS<CR>
+nnoremap <leader>so :<C-u>SNgSwitchHTML<CR>
+nnoremap <leader>sp :<C-u>SNgSwitchSpec<CR>
+
+" with vertical split
+nnoremap <leader>vu :<C-u>VNgSwitchTS<CR>
+nnoremap <leader>vi :<C-u>VNgSwitchCSS<CR>
+nnoremap <leader>vo :<C-u>VNgSwitchHTML<CR>
+nnoremap <leader>vp :<C-u>VNgSwitchSpec<CR>
 ```
 
 ## Supported environment
