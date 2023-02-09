@@ -31,6 +31,7 @@ let s:ExtensionType = {
 \ 'ts': 'ts',
 \ 'html': 'html',
 \ 'spec.ts': 'spec',
+\ 'test.ts': 'spec',
 \ 'css': 'css',
 \ 'scss': 'css',
 \ 'sass': 'css',
@@ -69,6 +70,9 @@ let s:AngularFileFactory = {}
 function! s:AngularFileFactory.create(filePath) abort
   let ngFile = deepcopy(s:AngularFile)
   if a:filePath =~? '\.spec\.ts$'
+    let ngFile.name = fnamemodify(a:filePath, ':t:r:r')
+    let ngFile.extension = fnamemodify(a:filePath, ':e:e')
+  elseif a:filePath =~? '\.test\.ts$'
     let ngFile.name = fnamemodify(a:filePath, ':t:r:r')
     let ngFile.extension = fnamemodify(a:filePath, ':e:e')
   else

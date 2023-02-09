@@ -19,6 +19,14 @@ Describe AngularFileFactory
     Assert Equals(ngFile.extension, 'spec.ts')
   End
 
+  It treats a spec file with .test.ts extension
+    let ngFile = factory.create('src/app/app.component.test.ts')
+    Assert Equals(ngFile.path, 'src/app/app.component.test.ts')
+    Assert Equals(ngFile.directory, 'src/app')
+    Assert Equals(ngFile.name, 'app.component')
+    Assert Equals(ngFile.extension, 'test.ts')
+  End
+
   Context when a file without extension is given
     It creates an object with a empty extension
       let ngFile = factory.create('./.gitignore')
@@ -91,6 +99,17 @@ Describe AngularFile
   Context .isSpec()
     It returns 1 if the file extension is .spec.ts (not *.ts)
       let spec = factory.create('foo.spec.ts')
+      Assert Equals(spec.isSpec(), 1)
+      let ts = factory.create('foo.ts')
+      Assert Equals(ts.isSpec(), 0)
+      let noExtension = factory.create('.gitignore')
+      Assert Equals(noExtension.isHTML(), 0)
+      let notDefined = factory.create('package.json')
+      Assert Equals(notDefined.isHTML(), 0)
+    End
+
+    It returns 1 if the file extension is .test.ts (not *.ts)
+      let spec = factory.create('foo.test.ts')
       Assert Equals(spec.isSpec(), 1)
       let ts = factory.create('foo.ts')
       Assert Equals(ts.isSpec(), 0)
